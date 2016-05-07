@@ -1,0 +1,5 @@
+---
+
+- name: Set timezone
+  command: "ln -sf /usr/share/zoneinfo/{{timezone}} /etc/localtime"
+  

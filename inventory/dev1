@@ -1,0 +1,8 @@
+[controller]
+osdev-hw-ctrl0[1:2]
+
+[network]
+osdev-hw-net0[1:2]
+
+[compute]
+osdev-hw-compute0[1:3]

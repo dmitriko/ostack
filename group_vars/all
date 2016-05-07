@@ -1,0 +1,4 @@
+---
+# file: group_vars/all
+ntp: ntp.citynetwork.se
+timezone: CET
