@@ -1,0 +1,27 @@
+---
+
+- name: Upgrade all packages
+  yum: name=* state=latest
+
+- name: Install opt repo if on RHEL
+  command: subscription-manager repos --enable rhel-7-server-optional-rpms
+  when: ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install common RPMs
+  yum: state=present name={{ item }}
+  with_items:
+    - sudo
+    - dbus
+    - openssl-devel
+    - emacs-nox
+    - git
+    - python-lxml
+    - tcpdump
+    - yum-cron
+    - epel-release
+    - iptables
+    - iptables-services
+    - libxslt-devel
+    - wget
+    - nfs-utils
+    - yum-plugin-priorities
