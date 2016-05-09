@@ -1,4 +1,4 @@
 ---
 # file: group_vars/all
-ntp: ntp.citynetwork.se
+ntpserver: ntp.citynetwork.se
 timezone: CET
