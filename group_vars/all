@@ -1,4 +1,6 @@
 ---
 # file: group_vars/all
+
+rdo_repo: https://rdoproject.org/repos/rdo-release.rpm
 ntpserver: ntp.citynetwork.se
 timezone: CET

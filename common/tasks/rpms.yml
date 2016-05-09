@@ -25,3 +25,14 @@
     - wget
     - nfs-utils
     - yum-plugin-priorities
+
+- name: Setup RDO repo
+  yum: state=present name="{{ rdo_repo }}"
+
+- name: Setup common OpenStack RPMs
+  yum: state=present name={{ item }}
+  with_items:
+    - python-pip
+    - openstack-utils
+    - openstack-selinux
+ 
