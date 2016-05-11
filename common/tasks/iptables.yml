@@ -1,0 +1,46 @@
+---
+- name: Check if firewalld is installed
+  command: rpm -q firewalld
+  register: pkg_check
+  failed_when: pkg_check.rc > 1
+  changed_when: no
+  tags: iptables
+
+- name: Ensure firewalld service is not enabled
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  when: pkg_check.rc == 0
+  tags: iptables
+  
+- name: Mask firewalld service
+  command: systemctl mask firewalld
+  register: firewalld_mask_result
+  changed_when: "'firewalld' in firewalld_mask_result.stdout"
+  when: pkg_check.rc == 0
+  ignore_errors: yes
+  tags: iptables
+  
+- name: Install iptables packages
+  yum: name="{{ item }}" state=present
+  tags: iptables
+  with_items:
+    - iptables
+    - iptables-services
+
+- name: Insert iptables template
+  template: src=iptables.j2 dest=/etc/sysconfig/iptables
+  notify: restart iptables
+  tags: iptables  
+
+- name: Restore SELinux context for iptables template
+  command: restorecon /etc/sysconfig/iptables
+  tags: iptables 
+
+- name: Start and enable iptables service
+  tags: iptables  
+  service:
+    name: iptables
+    state: started
+    enabled: yes

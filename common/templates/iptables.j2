@@ -1,0 +1,33 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+{% if is_secure %}
+-A INPUT -m state --state NEW -j LOG --log-prefix "[CN FWLOG NEW CONNECTION]:"
+{% endif %}
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+{% for network in trusted_networks %}
+-A INPUT -i {{ nics[network] }} -j ACCEPT
+-A OUTPUT -o {{ nics[network] }} -j ACCEPT
+{% endfor %}
+-A INPUT -i lo -j ACCEPT
+{% for ip_ in ssh_allowed_ips %}
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ip_}} --dport 22 -j ACCEPT
+{% endfor %}
+-A INPUT -s 91.123.199.129/25 -p tcp --dport 6060 -j ACCEPT
+
+{% if inventory_hostname in groups['controller'] %}
+{% for port in controller_public_ports %}
+-A INPUT -p tcp {{ ipset_val }} -m multiport --dports {{ port }} -j ACCEPT
+{% endfor %}
+{% endif %}
+
+-A INPUT -p udp --dport 161 -s 91.123.192.9
+-A INPUT -s 91.123.192.60/31 -j ACCEPT
+
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+
+COMMIT
+# end

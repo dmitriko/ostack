@@ -1,0 +1,7 @@
+---
+
+nics:
+  public_infra: em1
+  manage: em2.272
+  data: em2.270
+  storage: em2.271

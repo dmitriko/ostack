@@ -4,3 +4,19 @@
 rdo_repo: https://rdoproject.org/repos/rdo-release.rpm
 ntpserver: ntp.citynetwork.se
 timezone: CET
+trusted_networks:
+  - manage
+  - data
+  - storage
+# iptables stuff
+is_secure: False
+ssh_allowed_ips:
+  - 91.123.199.0/24
+  - 91.123.192.0/24
+  - 91.106.192.192/27
+  - 141.255.187.160/27
+  - 59.167.120.216/32
+  - 91.123.195.164
+ipset_val: ""
+controller_public_ports: [5000, 35357, 8080, 8004, 9292, 8776, 6080, 8773, 8774, 8775,  9696, 443, 80, 6080]
+# end iptables
