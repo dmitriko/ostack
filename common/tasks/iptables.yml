@@ -34,7 +34,7 @@
   notify: restart iptables
   tags: iptables  
 
-- name: Restore SELinux context for iptables template
+- name: Restore SELinux context for iptables config
   command: restorecon /etc/sysconfig/iptables
   tags: iptables 
 
