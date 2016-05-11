@@ -1,0 +1,53 @@
+---
+- name: Install Erlang VM
+  yum: name=erlang state=present
+  tags: controller_rabbitmq
+  
+- name: Install RabbitMQ rpm
+  yum: name={{rabbitmq_rpm_url}} state=present
+  tags: controller_rabbitmq
+  
+- name: Enable and start RabbitMQ service
+  service: name=rabbitmq-server state=started enabled=yes
+  tags: controller_rabbitmq
+  
+- name: Enable management plugin
+  rabbitmq_plugin: name=rabbitmq_management state=enabled
+  tags: controller_rabbitmq
+
+- name: Setup RabbitMQ vhost
+  rabbitmq_vhost: name="/{{rabbitmq_vhost}}" state=present
+  tags: controller_rabbitmq
+  
+- name: Setup RabbitMQ OpenStack user
+  rabbitmq_user: user={{rabbitmq_user}}
+                 vhost="/{{rabbitmq_vhost}}"
+                 password={{rabbitmq_password}}
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
+                 state=present
+  tags: controller_rabbitmq
+  
+- name: Setup RabbitMQ admin user         
+  rabbitmq_user: user={{rabbitmq_admin}}
+                 password={{rabbitmq_admin_password}}
+                 vhost=/
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
+                 tags=administrator
+                 state=present
+  tags: controller_rabbitmq
+
+- name: Check rabbitmq user ulimit
+  command: su - rabbitmq -s /bin/sh -c 'ulimit -n'
+  register: rabbitmq_ulimit
+  changed_when: no
+  tags: controller_rabbitmq
+  
+- name: Set rabbitmq user ulimit
+  shell: "echo 'rabbitmq soft nofile 4096' > /etc/security/limits.d/rabbitmq.conf"
+  when: rabbitmq_ulimit.stdout != '4096'
+  tags: controller_rabbitmq
+  
