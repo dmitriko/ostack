@@ -1,1 +1,31 @@
 ---
+
+- name: Fix sysctl for controller
+  sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present sysctl_set=yes
+  with_items:
+    - { name: "net.ipv4.ip_nonlocal_bind", value: 1 }
+  tags: controller_main
+
+- name: Check internal virtual IP is set
+  command: ip add ls {{nics.manage}}
+  register: int_ip_check
+  changed_when: no
+  tags: controller_main
+  
+- name: Set internal virtual IP on master controller
+  command: "ip addr add {{int_virtual_ip}}/32 dev {{nics.manage}} "
+  when: is_master_controller and int_virtual_ip not in int_ip_check.stdout
+  tags: controller_main
+
+- name: Check external virtual IP is set
+  command: ip add ls {{nics.public_infra}}
+  register: ext_ip_check
+  changed_when: no
+  tags: controller_main
+  
+- name: Set external virtual IP on master controller
+  command: "ip addr add {{ext_virtual_ip}}/32 dev {{nics.public_infra}} "
+  when: is_master_controller and ext_virtual_ip not in ext_ip_check.stdout
+  tags: controller_main
+
+- include: rabbitmq.yml

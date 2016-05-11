@@ -20,3 +20,13 @@ ssh_allowed_ips:
 ipset_val: ""
 controller_public_ports: [5000, 35357, 8080, 8004, 9292, 8776, 6080, 8773, 8774, 8775,  9696, 443, 80, 6080]
 # end iptables
+# should be reloaded in one of the controllers
+is_master_controller: False
+#RabbitMQ section
+rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
+rabbitmq_vhost: os
+rabbitmq_user: os
+rabbitmq_password: ae2ac95ff206c6ae11c8bfda
+rabbitmq_admin: city
+rabbitmq_admin_password: 05a9ded5ac1a8ded744bd911
+# end RabbitMQ section

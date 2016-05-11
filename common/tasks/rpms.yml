@@ -25,6 +25,9 @@
     - wget
     - nfs-utils
     - yum-plugin-priorities
+    - pyOpenSSL
+    - python-pyasn1
+    - python-ndg_httpsclient
 
 - name: Setup RDO repo
   yum: state=present name="{{ rdo_repo }}"
