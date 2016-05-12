@@ -24,7 +24,7 @@
 - name: Secures the MySQL localhost root user
   mysql_user:
     user="root"
-    password="{{ MySQL_root_pass }}"
+    password="{{ mysql_root_pass }}"
     host=localhost
   tags: controller_mysql
   when: mysql_root_access.rc == 0
@@ -32,10 +32,10 @@
 - name: Secures the MySQL for all root accounts
   mysql_user:
     user="root"
-    password="{{ MySQL_root_pass }}"
+    password="{{ mysql_root_pass }}"
     host="{{ item }}"
     login_user=root
-    login_password="{{ MySQL_root_pass}}"
+    login_password="{{ mysql_root_pass}}"
   with_items:
     - "{{ ansible_fqdn }}"
     - 127.0.0.1
@@ -43,9 +43,9 @@
   tags: controller_mysql
   
 - name: Deletes anonymous MySQL server user for localhost
-  mysql_user: user="" state="absent" login_password="{{ MySQL_root_pass }}" login_user=root
+  mysql_user: user="" state="absent" login_password="{{ mysql_root_pass }}" login_user=root
 
 - name: Removes the MySQL test database
-  mysql_db: db=test state=absent login_password="{{ MySQL_root_pass }}" login_user=root
+  mysql_db: db=test state=absent login_password="{{ mysql_root_pass }}" login_user=root
   tags: controller_mysql
 

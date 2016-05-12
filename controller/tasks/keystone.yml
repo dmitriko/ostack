@@ -1,0 +1,46 @@
+---
+- name: Install minimal keystone requirements
+  yum: name={{item}} state=present
+  with_items:
+    - python-keystoneclient
+    - python-openstackclient
+  tags: controller_keystone
+  
+- name: Create keystone rc file
+  template: src="keystonerc.j2" dest=/root/keystonerc
+  tags: controller_keystone
+
+- name: Install Keystone controller RPMs
+  yum: name={{item}} state=present
+  with_items:
+    - openstack-utils
+    - openstack-keystone
+  when: is_running_keystone
+  tags: controller_keystone
+
+- name: Update keystone conf
+  debug: msg=implement me
+  when: is_running_keystone
+  tags: controller_keystone
+  
+- name: Create Keystone DB
+  mysql_db: name=keystone state=present login_user=root login_password={{mysql_root_pass}}
+  when: is_master_controller and is_running_keystone
+  tags: controller_keystone
+  
+- name: Create Keystone DB user
+  mysql_user:
+    name=keystone
+    priv=keystone.*:ALL
+    password={{keystone_db_pass}}
+    state=present
+    login_user=root
+    login_password={{mysql_root_pass}}
+  when: is_master_controller and is_running_keystone
+  tags: controller_keystone
+  
+- name: Keystone DB sync
+  command: keystone-manage db_sync
+  become_user: keystone
+  when: is_master_controller and is_running_keystone and 0
+  tags: controller_keystone
