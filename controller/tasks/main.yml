@@ -29,3 +29,5 @@
   tags: controller_main
 
 - include: rabbitmq.yml
+
+- include: mysql.yml

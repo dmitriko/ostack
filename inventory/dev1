@@ -10,3 +10,4 @@ osdev-hw-compute0[1:3]
 [all:vars]
 int_virtual_ip=192.168.20.240
 ext_virtual_ip=91.106.192.194
+MySQL_root_pass=987110d257aae9d7d8262f42
