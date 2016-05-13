@@ -25,6 +25,7 @@
     - wget
     - nfs-utils
     - yum-plugin-priorities
+    - python-pip
     - pyOpenSSL
     - python-pyasn1
     - python-ndg_httpsclient

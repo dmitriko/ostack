@@ -30,3 +30,59 @@ rabbitmq_password: ae2ac95ff206c6ae11c8bfda
 rabbitmq_admin: city
 rabbitmq_admin_password: 05a9ded5ac1a8ded744bd911
 # end RabbitMQ section
+
+openstack_services:
+  - name: keystone
+    user: keystone
+    type: identity
+    description: "Keystone Identity Service"
+    public_url: "{{auth_url}}"
+    internal_url: "{{auth_uri}}"
+  - name: nova
+    user: nova
+    type: compute
+    description: Nova Compute Service
+    public_url: "{{ext_base_url}}:8774/v2/%(tenant_id)s"
+    internal_url: "{{int_base_url}}:8774/v2/%(tenant_id)s"
+  - name: volume
+    user: cinder
+    type: volume
+    description: "Cinder - Nova Volume Service"
+    public_url: "{{ext_base_url}}:8776/v1/%(tenant_id)s"
+    internal_url: "{{ext_base_url}}:8776/v1/%(tenant_id)s"
+  - name: cinderv2
+    user: cinder
+    type: volumev2
+    description: "Cinder - Nova Volume Service v2"
+    public_url: "{{ext_base_url}}:8776/v2/%(tenant_id)s"
+    internal_url: "{{ext_base_url}}:8776/v2/%(tenant_id)s"
+  - name: glance
+    user: glance
+    type: image
+    description: Glance Image Service
+    public_url: "{{ext_base_url}}:9292"
+    internal_url: "{{int_base_url}}:9292"
+  - name: neutron
+    user: neutron
+    type: network
+    description: "OpenStack Networking Service"
+    public_url: "{{ext_base_url}}:9696"
+    internal_url: "{{int_base_url}}:9696"
+  - name: heat
+    user: heat
+    type: orchestration
+    description: Orchestration
+    public_url: "{{ext_base_url}}:8004/v1/%(tenant_id)s"
+    internal_url: "{{int_base_url}}:8004/v1/%(tenant_id)s"
+  - name: heat-cfn
+    user: heat
+    type: cloudformation 
+    description: Orchestration
+    public_url: "{{ext_base_url}}:8000/v1"
+    internal_url: "{{ext_base_url}}:8000/v1"
+  - name: metering
+    user: ceilometer    
+    type: metering
+    description: Telemetry
+    public_url: "{{ext_base_url}}:8777"
+    internal_url: "{{int_base_url}}:8777"
