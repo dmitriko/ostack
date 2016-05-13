@@ -19,6 +19,7 @@
   command: mysql -e "select 1"
   register: mysql_root_access
   changed_when: no
+  failed_when: no
   tags: controller_mysql
   
 - name: Secures the MySQL localhost root user
@@ -49,3 +50,6 @@
   mysql_db: db=test state=absent login_password="{{ mysql_root_pass }}" login_user=root
   tags: controller_mysql
 
+- name: Put /root/.my.cnf for password less root login to mysql
+  template: src=dot.my.cnf.j2 dest=/root/.my.cnf mode=0400
+  tags: controller_mysql
