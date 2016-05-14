@@ -1,0 +1,5 @@
+int_virtual_ip: 192.168.20.240
+ext_virtual_ip: 91.106.192.194
+server_name: "osdev-hw.citycloud.com"
+region: Dev1
+is_running_keystone: True
