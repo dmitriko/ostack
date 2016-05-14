@@ -35,11 +35,11 @@
     state: directory
 
 - name: Upload ssl key
-  copy: content="{{ssl_key}}" dest="{{ssl_key_path}}"
+  copy: content="{{ssl_key}}" dest="{{ssl_key_path}}" setype="etc_t"
   tags: controller_main
   
 - name: Uplaod ssl pem
-  copy: content="{{ssl_pem}}" dest="{{ssl_pem_path}}"
+  copy: content="{{ssl_pem}}" dest="{{ssl_pem_path}}" setype="etc_t"
   tags: controller_main
   
 - include: rabbitmq.yml
