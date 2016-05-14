@@ -28,6 +28,20 @@
   when: is_master_controller and ext_virtual_ip not in ext_ip_check.stdout
   tags: controller_main
 
+- name: Make sure ssl keys dir exists
+  file:
+    path: "{{ssl_dir}}"
+    recursive: true
+    state: directory
+
+- name: Upload ssl key
+  copy: content="{{ssl_key}}" dest="{{ssl_key_path}}"
+  tags: controller_main
+  
+- name: Uplaod ssl pem
+  copy: content="{{ssl_pem}}" dest="{{ssl_pem_path}}"
+  tags: controller_main
+  
 - include: rabbitmq.yml
 - include: mysql.yml
 - include: keystone.yml

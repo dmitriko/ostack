@@ -1,14 +1,14 @@
 ---
-# file: group_vars/all
+# file: group_vars/all/vars.yml
 
 rdo_repo: https://rdoproject.org/repos/rdo-release.rpm
 ntpserver: ntp.citynetwork.se
 timezone: CET
+# iptables stuff
 trusted_networks:
   - manage
   - data
   - storage
-# iptables stuff
 is_secure: False
 ssh_allowed_ips:
   - 91.123.199.0/24
@@ -33,6 +33,14 @@ admin_pass: "{{vault_admin_pass}}"
 admin_token: "{{vault_admin_token}}"
 keystone_db_pass: "{{vault_keystone_db_pass}}"
 
+# ssl params
+ssl_pem: "{{vault_ssl_pem}}"
+ssl_key: "{{vault_ssl_key}}"
+ssl_dir: "/var/ssl"
+ssl_pem_path: "{{ssl_dir}}/ssl_citycloud.pem"
+ssl_key_path: "{{ssl_dir}}/ssl_citycloud.key"
+# end ssl params
+
 # should be reloaded in one of the controllers
 is_master_controller: False
 
@@ -45,9 +53,7 @@ rabbitmq_admin: city
 rabbitmq_admin_password: 05a9ded5ac1a8ded744bd911
 # end RabbitMQ section
 
-# the reason we have keystone_service separated is b/c
-# not all DCs have Keystone service running
-# _def is b/c there is module keystone_service
+# OpensStack services definitions
 keystone_service_def:
   name: keystone
   user: keystone
@@ -55,7 +61,9 @@ keystone_service_def:
   description: "Keystone Identity Service"
   public_url: "{{auth_url}}"
   internal_url: "{{auth_uri}}"
-
+# the reason we have keystone_service separated is b/c
+# not all DCs have Keystone service running
+# _def is b/c there is module keystone_service
 openstack_services:
   - name: nova
     user: nova
@@ -105,3 +113,4 @@ openstack_services:
     description: Telemetry
     public_url: "{{ext_base_url}}:8777"
     internal_url: "{{int_base_url}}:8777"
+#end OpensStack services definitions
