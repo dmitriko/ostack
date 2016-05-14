@@ -96,6 +96,20 @@
   when: is_master_controller and is_running_keystone
   tags: controller_keystone
 
+- name: Ensure Keystone service has endpoint in current region
+  keystone_service:
+    name="{{keystone_service_def.name}}"
+    type="{{keystone_service_def.type}}"
+    description="{{keystone_service_def.description}}"
+    public_url="{{keystone_service_def.description}}"
+    internal_url="{{keystone_service_def.internal_url}}"
+    admin_url="{{keystone_service_def.internal_url}}"
+    region="{{region}}"
+    token="{{admin_token}}"
+    endpoint="{{auth_uri}}"
+  when: is_master_controller
+  tags: controller_keystone
+
 - name: Ensure users for each service are exist
   keystone_user:
     user={{item.user}}
