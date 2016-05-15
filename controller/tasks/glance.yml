@@ -48,6 +48,15 @@
 - include: set_keystone_conf_vals.yml service_username="glance" dest="/etc/glance/glance-api.conf"
   tags: controller_glance
 
+- include: create_service_db.yml service_name="glance" db_pass="{{glance_db_pass}}"
+  when: is_master_controller
+  tags: controller_glance
+
+- name: Sync Glance database
+  command: "/usr/bin/glance-manage db_sync"
+  become_user: "glance"
+  tags: controller_glance
+  
 - name: Make sure Glance services are running/enabled
   service: name="{{item}}" state="running" enabled=True
   with_items:
@@ -55,7 +64,3 @@
     - openstack-glance-registry
   tags: controller_glance
   when: is_master_controller
-
-- name: foo
-  debug: msg="{{is_master_controller}}"
-  tags: now
