@@ -29,7 +29,7 @@
     option={{ item.option }}
     value={{ item.value }}
   with_items:
-    - { section: "DEFAULT", option: "public_endpoint", value: "{{auth_url}}" }
+    - { section: "DEFAULT", option: "public_endpoint", value: "{{ext_base_url}}:5000/" }
     - { section: "DEFAULT", option: "admin_token", value: "{{admin_token}}" }
     - { section: "DEFAULT", option: "public_bind_host", value: "{{int_virtual_ip}}" }
     - { section: "DEFAULT", option: "admin_bind_host", value: "{{int_virtual_ip}}"}
