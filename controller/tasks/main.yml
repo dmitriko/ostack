@@ -46,3 +46,4 @@
 - include: mysql.yml
 - include: keystone.yml
 - include: nginx.yml
+- include: glance.yml
