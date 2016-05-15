@@ -17,15 +17,6 @@ ssh_allowed_ips:
   - 141.255.187.160/27
   - 59.167.120.216/32
   - 91.123.195.164
-ipset_val: ""
-controller_public_ports: [5000, 35357, 8080, 8004, 9292, 8776, 6080, 8773, 8774, 8775,  9696, 443, 80, 6080]
-# end iptables
-
-int_base_url: "http://int.{{server_name}}"
-ext_base_url: "https://{{server_name}}"
-auth_url: "{{ext_base_url}}:5000/v2.0/"
-auth_uri: "{{int_base_url}}:35357/v2.0"
-
 # vars from group's vault
 service_pass: "{{vault_service_pass}}"
 mysql_root_pass: "{{vault_mysql_root_pass}}"
@@ -36,6 +27,26 @@ glance_db_pass: "{{vault_glance_db_pass}}"
 heat_db_pass: "{{vault_heat_db_pass}}"
 cinder_db_pass: "{{vault_cinder_db_pass}}"
 nova_db_pass: "{{vault_nova_db_pass}}"
+  
+ipset_val: ""
+controller_public_ports: [5000, 35357, 8080, 8004, 9292, 8776, 6080, 8773, 8774, 8775,  9696, 443, 80, 6080]
+# end iptables
+
+int_base_url: "http://int.{{server_name}}"
+ext_base_url: "https://{{server_name}}"
+auth_url: "{{int_base_url}}:35357"
+auth_uri: "{{ext_base_url}}:5000"
+
+keystone_authtoken_vals:
+  - [ 'auth_uri', "{{auth_uri}}" ]
+  - [ 'auth_url', "{{auth_url}}"]
+  - [ 'auth_plugin', 'password']
+  - [ 'project_domain_id', "default"]
+  - [ 'user_domain_id', 'default']
+  - [ 'project_name', 'service']
+  - [ 'username', "{{service_username}}" ]
+  - [ 'password', "{{service_pass}}" ]
+
 
 glance_filesystem_store_datadir: "/var/lib/glance/images/"
 # ssl params
@@ -51,7 +62,8 @@ is_master_controller: False
 
 #RabbitMQ section
 rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
-rabbitmq_vhost: os
+rabbitmq_host: "{{groups['controller'][0]}}"
+rabbitmq_virtual_host: os
 rabbitmq_user: os
 rabbitmq_password: "{{vault_rabbitmq_password}}"
 rabbitmq_admin: city
