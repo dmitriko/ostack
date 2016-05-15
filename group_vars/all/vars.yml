@@ -32,7 +32,12 @@ mysql_root_pass: "{{vault_mysql_root_pass}}"
 admin_pass: "{{vault_admin_pass}}"
 admin_token: "{{vault_admin_token}}"
 keystone_db_pass: "{{vault_keystone_db_pass}}"
+glance_db_pass: "{{vault_glance_db_pass}}"
+heat_db_pass: "{{vault_heat_db_pass}}"
+cinder_db_pass: "{{vault_cinder_db_pass}}"
+nova_db_pass: "{{vault_nova_db_pass}}"
 
+glance_filesystem_store_datadir: "/var/lib/glance/images/"
 # ssl params
 ssl_pem: "{{vault_ssl_pem}}"
 ssl_key: "{{vault_ssl_key}}"
@@ -48,9 +53,9 @@ is_master_controller: False
 rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
 rabbitmq_vhost: os
 rabbitmq_user: os
-rabbitmq_password: ae2ac95ff206c6ae11c8bfda
+rabbitmq_password: "{{vault_rabbitmq_password}}"
 rabbitmq_admin: city
-rabbitmq_admin_password: 05a9ded5ac1a8ded744bd911
+rabbitmq_admin_password: "{{vault_rabbitmq_admin_password}}"
 # end RabbitMQ section
 
 # OpensStack services definitions
