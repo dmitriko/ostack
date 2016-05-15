@@ -57,9 +57,7 @@ ssl_pem_path: "{{ssl_dir}}/ssl_citycloud.pem"
 ssl_key_path: "{{ssl_dir}}/ssl_citycloud.key"
 # end ssl params
 
-# should be reloaded in one of the controllers
-is_master_controller: False
-
+is_master_controller: "{{inventory_hostname==groups['controller'][0]}}"
 #RabbitMQ section
 rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
 rabbitmq_host: "{{groups['controller'][0]}}"

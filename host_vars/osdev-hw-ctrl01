@@ -5,5 +5,3 @@ nics:
   manage: em2.272
   data: em2.270
   storage: em2.271
-
-is_master_controller: True
