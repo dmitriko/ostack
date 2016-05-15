@@ -1,0 +1,61 @@
+---
+
+- name: Ensure Glance RPMs
+  yum: name="{{item}}" state=present
+  with_items:
+    - openstack-glance
+    - python-glanceclient
+  tags: controller_glance
+  
+- name: Set glance-api conf
+  setosconf:
+    dest: "/etc/glance/glance-api.conf"
+    section: "{{item.section}}"
+    option: "{{item.option}}"
+    value: "{{item.value}}"
+  with_items:
+    - { section: "DEFAULT", option: "bind_host", value: "{{int_virtual_ip}}" }
+    - { section: "DEFAULT", option: "os_region_name", value: "{{region}}" }
+    - { section: "DEFAULT", option: "registry_host", value: "{{int_virtual_ip}}" }
+    - { section: "paste_deploy", option: "flavor", value: "keystone"}    
+    - { section: "database", option: "connection", value: "mysql://glance:{{glance_db_pass}}@127.0.0.1/glance" }    
+    - { section: "glance_store", option: "stores", value: "glance.store.filesystem.Store,glance.store.http.Store" }
+    - { section: "glance_store", option: "filesystem_store_datadir", value: "{{glance_filesystem_store_datadir}}" }
+  tags: controller_glance
+
+- name: Set glance-registry conf
+  setosconf:
+    dest: "/etc/glance/glance-registry.conf"
+    section: "{{item.section}}"
+    option: "{{item.option}}"
+    value: "{{item.value}}"
+  with_items:
+    - { section: "DEFAULT", option: "bind_host", value: "{{int_virtual_ip}}" }
+    - { section: "DEFAULT", option: "os_region_name", value: "{{region}}" }
+    - { section: "paste_deploy", option: "flavor", value: "keystone"}
+    - { section: "database", option: "connection", value: "mysql://glance:{{glance_db_pass}}@127.0.0.1/glance" }    
+  tags: controller_glance
+
+- include: set_rabbit_conf_vals.yml dest="/etc/glance/glance-registry.conf"
+  tags: controller_glance
+
+- include: set_keystone_conf_vals.yml service_username="glance" dest="/etc/glance/glance-registry.conf"
+  tags: controller_glance
+  
+- include: set_rabbit_conf_vals.yml dest="/etc/glance/glance-api.conf"
+  tags: controller_glance
+  
+- include: set_keystone_conf_vals.yml service_username="glance" dest="/etc/glance/glance-api.conf"
+  tags: controller_glance
+
+- name: Make sure Glance services are running/enabled
+  service: name="{{item}}" state="running" enabled=True
+  with_items:
+    - openstack-glance-api
+    - openstack-glance-registry
+  tags: controller_glance
+  when: is_master_controller
+
+- name: foo
+  debug: msg="{{is_master_controller}}"
+  tags: now
