@@ -146,13 +146,3 @@
   with_items: openstack_services
   when: is_master_controller
   tags: controller_keystone
-
-- name: Ensure Keystone controler has Nginx proxy setup
-  debug: msg=implement me
-  when: is_master_controller and is_running_keystone
-  tags: controller_keystone
-
-- name: Ensure each service has Nginx proxy setup
-  debug: msg=implement me
-  when: is_master_controller
-  tags: controller_keystone

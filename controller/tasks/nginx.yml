@@ -1,0 +1,34 @@
+---
+- name: Install Nginx RPM
+  yum: name=nginx state=present
+  tags: controller_nginx
+
+- name: Enable Nginx service
+  service: name=nginx state=running enabled=True
+  tags: controller_nginx
+
+# Ensure each service has Nginx proxy setup
+- include: create_nginx_conf.yml service_name=keystone port=5000
+  when: is_running_keystone
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=nova port=8774
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=cinder port=8776
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=glance port=9292
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=neutron port=9696
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=heat port=8004
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=heat_cfn port=8000
+  tags: controller_nginx
+
+- include: create_nginx_conf.yml service_name=ceilometer port=8777
+  tags: controller_nginx

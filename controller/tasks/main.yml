@@ -45,3 +45,4 @@
 - include: rabbitmq.yml
 - include: mysql.yml
 - include: keystone.yml
+- include: nginx.yml

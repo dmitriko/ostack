@@ -1,0 +1,6 @@
+- name: Create nginx conf for {{service_name}}
+  template:
+    src="nginx_endpoint.conf.j2"
+    dest="/etc/nginx/conf.d/{{service_name}}_endpont.conf"
+    setype="httpd_config_t"
+  notify: restart nginx

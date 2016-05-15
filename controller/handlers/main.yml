@@ -1,0 +1,3 @@
+---
+- name: restart nginx
+  shell: "nginx -t && setenforce 0 && systemctl restart nginx && setenforce 1"
