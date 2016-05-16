@@ -1,0 +1,38 @@
+---
+ml2_conf: '/etc/neutron/plugins/ml2/ml2_conf.ini'
+neutron_plugin_ini: '/etc/neutron/plugin.ini'
+neutron_server_conf_vals:
+  - [ 'DEFAULT', 'core_plugin', 'ml2' ]
+  - [ 'DEFAULT', 'service_plugins', "router,lbaas,vpnaas,metering" ]
+  - [ 'DEFAULT', 'allow_overlapping_ips', True ]
+  - [ 'DEFAULT', 'api_workers', 4 ]
+  - [ 'DEFAULT', 'rpc_workers', 4 ]
+  - [ 'DEFAULT', 'allow_automatic_dhcp_failover', False ]
+  - [ 'DEFAULT', 'notify_nova_on_port_status_changes', True ]
+  - [ 'DEFAULT', 'notify_nova_on_port_data_changes', True ]
+  - [ 'DEFAULT', 'nova_url', 'http://{{int_virtual_ip}}:8774/v2']
+  - [ 'DEFAULT', 'bind_host', '{{int_virtual_ip}}' ]
+  - [ 'database', 'connection', 'mysql://neutron:{{neutron_db_pass}}@127.0.0.1/neutron' ]
+  - [ 'nova', 'auth_url', 'http://{{int_virtual_ip}}:35357/v2.0' ]
+  - [ 'nova', 'auth_plugins', 'v2password' ]
+  - [ 'nova', 'project_domain_id', 'default' ]
+  - [ 'nova', 'region_name', '{{region}}' ]
+  - [ 'nova', 'project_name', 'service' ]
+  - [ 'nova', 'tenant_name', 'service' ]
+  - [ 'nova', 'username', 'nova' ]
+  - [ 'nova', 'user_domain_id', 'default' ]
+  - [ 'nova', 'password', '{{service_pass}}' ]
+
+vxlan_vni_ranges: '65537:69999'
+neutron_ml2_conf_vals:
+  - [ 'ml2', 'type_drivers', 'vxlan' ]
+  - [ 'ml2', 'tenant_network_types', 'vxlan' ]
+  - [ 'ml2', 'mechanism_drivers', 'openvswitch' ]
+  - [ 'ml2_type_vxlan', 'vni_ranges', '{{vxlan_vni_ranges}}' ]
+  - [ 'securitygroup', 'firewall_driver', 'neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver' ]
+  - [ 'securitygroup', 'enable_security_group', True ]
+  - [ 'ovs', 'enable_tunneling', True ]
+  - [ 'ovs', 'tunnel_id_ranges', 'vxlan_vni_ranges' ]
+  - [ 'ovs', 'tunnel_type', 'vxlan' ]
+  - [ 'ovs', 'tenant_network_type', 'vxlan' ]
+  - [ 'agent', 'tunnel_types', 'vxlan' ]

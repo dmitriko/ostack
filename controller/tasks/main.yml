@@ -47,3 +47,5 @@
 - include: keystone.yml
 - include: nginx.yml
 - include: glance.yml
+- include: nova.yml
+- include: neutron.yml 

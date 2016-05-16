@@ -27,7 +27,11 @@ glance_db_pass: "{{vault_glance_db_pass}}"
 heat_db_pass: "{{vault_heat_db_pass}}"
 cinder_db_pass: "{{vault_cinder_db_pass}}"
 nova_db_pass: "{{vault_nova_db_pass}}"
-  
+neutron_db_pass: "{{vault_neutron_db_pass}}"
+neutron_metadata_secret: "{{vault_neutron_metadata_secret}}"
+ceilometer_db_pass: "{{vault_ceilometer_db_pass}}"
+ceilometer_secret: "{{vault_ceilometer_secret}}"
+
 ipset_val: ""
 controller_public_ports: [5000, 35357, 8080, 8004, 9292, 8776, 6080, 8773, 8774, 8775,  9696, 443, 80, 6080]
 # end iptables
