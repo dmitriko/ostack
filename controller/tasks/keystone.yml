@@ -33,7 +33,7 @@
     - { section: "DEFAULT", option: "admin_token", value: "{{admin_token}}" }
     - { section: "DEFAULT", option: "public_bind_host", value: "{{int_virtual_ip}}" }
     - { section: "DEFAULT", option: "admin_bind_host", value: "{{int_virtual_ip}}"}
-    - { section: "sql", option: "connection", value: "mysql://keystone:{{keystone_db_pass}}@127.0.0.1/keystone"}
+    - { section: "database", option: "connection", value: "mysql://keystone:{{keystone_db_pass}}@127.0.0.1/keystone"}
   when: is_running_keystone
   tags: controller_keystone
 
@@ -69,7 +69,7 @@
     tenant={{item.name}}
     tenant_description="{{item.description}}"
     token={{admin_token}}
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   with_items:
     - { name: 'admin', description: "Default tenant" }
     - { name: 'service', description: "Service tenant" }
@@ -82,7 +82,7 @@
     tenant=admin
     password={{admin_pass}}
     token={{admin_token}}
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   when: is_master_controller and is_running_keystone
   tags: controller_keystone
 
@@ -92,7 +92,7 @@
     user=admin
     tenant=admin
     token={{admin_token}}
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   when: is_master_controller and is_running_keystone
   tags: controller_keystone
 
@@ -106,7 +106,7 @@
     admin_url="{{keystone_service_def.internal_url}}"
     region="{{region}}"
     token="{{admin_token}}"
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   when: is_master_controller
   tags: controller_keystone
 
@@ -116,7 +116,7 @@
     tenant=service
     password={{service_pass}}
     token={{admin_token}}
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   with_items: openstack_services
   when: is_master_controller and is_running_keystone
   tags: controller_keystone
@@ -127,7 +127,7 @@
     user={{item.user}}
     tenant=service
     token={{admin_token}}
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   with_items: openstack_services
   when: is_master_controller and is_running_keystone
   tags: controller_keystone
@@ -137,12 +137,12 @@
     name="{{item.name}}"
     type="{{item.type}}"
     description="{{item.description}}"
-    public_url="{{item.description}}"
+    public_url="{{item.public_url}}"
     internal_url="{{item.internal_url}}"
     admin_url="{{item.internal_url}}"
     region="{{region}}"
     token="{{admin_token}}"
-    endpoint="{{auth_uri}}"
+    endpoint="{{auth_token_url}}"
   with_items: openstack_services
   when: is_master_controller
   tags: controller_keystone
