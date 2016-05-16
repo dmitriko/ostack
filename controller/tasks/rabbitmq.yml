@@ -14,15 +14,15 @@
 - name: Enable management plugin
   rabbitmq_plugin: name=rabbitmq_management state=enabled
   tags: controller_rabbitmq
-
+  
 - name: Setup RabbitMQ vhost
-  rabbitmq_vhost: name="/{{rabbitmq_vhost}}" state=present
+  rabbitmq_vhost: name="{{rabbitmq_virtual_host}}" state=present
   tags: controller_rabbitmq
   
 - name: Setup RabbitMQ OpenStack user
   rabbitmq_user: user={{rabbitmq_user}}
-                 vhost="/{{rabbitmq_vhost}}"
-                 password={{rabbitmq_password}}
+                 vhost="{{rabbitmq_virtual_host}}"
+                 password="{{rabbitmq_password}}"
                  configure_priv=.*
                  read_priv=.*
                  write_priv=.*

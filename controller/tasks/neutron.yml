@@ -21,14 +21,14 @@
     - neutron_server_conf_vals
   tags: controller_neutron
   
-- include: set_keystone_conf_vals.yml service_username="glance" dest="/etc/neutron/neutron.conf"
+- include: set_keystone_conf_vals.yml service_username="neutron" dest="/etc/neutron/neutron.conf"
   tags: controller_neutron 
 
 - include: set_rabbit_conf_vals.yml dest="/etc/neutron/neutron.conf"
   tags: controller_neutron
 
-- include: "{{playbook_dir}}/common/tasks/set_ml2_conf.yml"
-  tags: now
+- include: "set_ml2_conf.yml"
+  tags: controller_neutron
   
 - include: create_service_db.yml service_name="neutron" db_pass="{{neutron_db_pass}}"
   when: is_master_controller  

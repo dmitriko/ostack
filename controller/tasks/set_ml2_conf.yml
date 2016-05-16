@@ -11,11 +11,10 @@
 - name: Check plugin.ini is link to ml2 config
   stat: path="{{neutron_plugin_ini}}"
   register: plugin_path
-
-- name: Delete plugin.ini of it is not a corret link
+  
+- name: Delete plugin.ini if it is not a correct link
   file: path="{{neutron_plugin_ini}}" state="absent"
-  when: "not plugin_path.stat.islnk or plugin_path.stat.link_source != ml2_conf"
+  when: "not plugin_path.stat.islnk or plugin_path.stat.lnk_source != ml2_conf"
   
 - name: Create symlink for plugin config
   file: src="{{ml2_conf}}" dest="{{neutron_plugin_ini}}" owner="neutron" state="link"
-  when: "'controller' in group_names"
