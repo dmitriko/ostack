@@ -1,0 +1,13 @@
+---
+- name: Create service database
+  mysql_db: name={{service_name}} state=present login_user=root login_password={{mysql_root_pass}}  
+
+- name: Create service user
+  mysql_user:
+    name={{service_name}}
+    priv={{service_name}}.*:ALL
+    password={{db_pass}}
+    state=present
+    login_user=root
+    login_password={{mysql_root_pass}}
+  
