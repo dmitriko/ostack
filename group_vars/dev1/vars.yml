@@ -3,3 +3,9 @@ ext_virtual_ip: 91.106.192.194
 server_name: "osdev-hw.citycloud.com"
 region: Dev1
 is_running_keystone: True
+# default nics
+nics:
+  public_infra: em1
+  manage: em2.272
+  data: em2.270
+  storage: em2.271

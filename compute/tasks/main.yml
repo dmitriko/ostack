@@ -1,1 +1,29 @@
 ---
+
+- name: Ensure RPMs for Compute node
+  yum: name="{{item}}" state="present"
+  with_items:
+    - 'openstack-nova-compute'
+    - 'sysfsutils'
+    - 'libguestfs-tools'
+    - 'openstack-neutron'
+    - 'openstack-neutron-ml2'
+    - 'openstack-neutron-openvswitch'
+  tags: compute_main
+
+- name: Load bridge module
+  command: "brctl show"
+  tags: compute_main
+  
+- name: Ensure sysctl settings
+  sysctl: name="{{ item.name }}" value="{{ item.value }}" state=present sysctl_set=yes
+  with_items:
+    - { name: "net.ipv4.ip_nonlocal_bind", value: 1 }
+    - { name: "net.bridge.bridge-nf-call-iptables", value: 1 }
+    - { name: "net.ipv4.conf.all.rp_filter", value: 0 }
+    - { name: "net.ipv4.conf.default.rp_filter", value: 0 }
+    - { name: "net.bridge.bridge-nf-call-ip6tables", value: 1 }
+    - { name: "net.nf_conntrack_max", value: "524288" }
+  tags: compute_main
+  
+  
