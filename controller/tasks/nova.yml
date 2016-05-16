@@ -1,0 +1,43 @@
+---
+- name: Ensure Nova RPMs
+  yum: name="openstack-nova" state="present"
+  tags: controller_nova
+  
+- name: Set nova conf
+  setosconf:
+    dest: "/etc/nova/nova.conf"
+    section: "{{item.0}}"
+    option: "{{item.1}}"
+    value: "{{item.2}}"
+  with_nested:
+    - nova_controller_conf_vals
+  tags: controller_nova
+
+- include: set_keystone_conf_vals.yml service_username="nova" dest="/etc/nova/nova.conf"
+  tags: controller_nova
+  
+- include: set_rabbit_conf_vals.yml dest="/etc/nova/nova.conf"
+  tags: controller_nova
+  
+- name: Fix nova/api-paste.ini
+  setosconf:
+    dest: '/etc/nova/api-paste.ini'
+    section: 'filter:authtoken'
+    option: 'auth_version'
+    value: 'v3.0'
+  tags: controller_nova
+
+- include: create_service_db.yml service_name="nova" db_pass="{{nova_db_pass}}"
+  tags: controller_nova
+
+- name: Sync Nova db
+  command: "nova-manage db sync"
+  become_user: "nova"
+  when: is_master_controller
+  tags: controller_nova
+  
+- name: Make sure Nova service enabled/started
+  service: name="{{item}}" state="running" enabled=True
+  when: is_master_controller
+  tags: controller_nova
+  with_items: nova_rdo_services

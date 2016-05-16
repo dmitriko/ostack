@@ -1,0 +1,30 @@
+---
+nova_libvirt_type: 'kvm'
+nova_controller_conf_vals:
+  - [ 'DEFAULT', 'my_ip', "{{int_virtual_ip}}" ]
+  - [ 'DEFAULT', 'vncserver_listen', "{{int_virtual_ip}}" ]
+  - [ 'DEFAULT', 'ram_allocation_ratio', '1' ]
+  - [ 'DEFAULT', 'ssl_only', 'true' ]
+  - [ 'DEFAULT', 'lock_path', "/var/lib/nova/tmp" ]
+  - [ 'DEFAULT', 'log_dir', '/var/log/nova' ]
+  - [ 'DEFAULT', 'osapi_compute_listen', "{{int_virtual_ip}}" ]
+  - [ 'DEFAULT', 'cert', "{{ssl_cert_path}}" ]
+  - [ 'DEFAULT', 'key', "{{ssl_key_path}}" ]
+  - [ 'DEFAULT', 'state_path', '/var/lib/nova' ]
+  - [ 'DEFAULT', 'os_region_name', "{{region}}" ]
+  - [ 'DEFAULT', 'vncserver_proxyclient_address', "{{ext_virtual_ip}}" ]
+  - [ 'database', 'connection', "mysql://nova:{{nova_db_pass}}@127.0.0.1/nova" ]
+  - [ 'libvirt', 'virt_type', "{{nova_libvirt_type}}" ]
+  - [ 'cinder', 'os_region_name', "{{region}}" ]
+  - [ 'glance', 'glance_host', "{{int_virtual_ip}}" ]
+  - [ 'oslo_concurrency', 'lock_path', '/var/lib/nova/tmp' ]
+
+nova_rdo_services:
+  - 'openstack-nova-api'
+  - 'openstack-nova-scheduler'
+  - 'openstack-nova-cert'
+  - 'openstack-nova-console'
+  - 'openstack-nova-conductor'
+  - 'openstack-nova-novncproxy'
+  - 'openstack-nova-consoleauth'
+    
