@@ -1,0 +1,40 @@
+---
+- name: Ensure Cinder RPMs
+  yum: name="{{item}}" state="present"
+  with_items:
+    - openstack-cinder
+  tags: controller_cinder
+  
+- name: Update Cinder conf
+  setosconf:
+    dest="/etc/cinder/cinder.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - cinder_conf_vals
+  tags: controller_cinder
+  
+- include: set_rabbit_conf_vals.yml dest="/etc/cinder/cinder.conf"
+  tags: controller_cinder
+  
+- include: set_keystone_conf_vals.yml dest="/etc/cinder/cinder.conf" service_username="cinder"
+  tags: controller_cinder
+
+- include: create_service_db.yml service_name="cinder" db_pass="{{cinder_db_pass}}"
+  tags: controller_cinder
+  when: is_master_controller
+
+- name: Sync Cinder DB
+  command: cinder-manage db sync
+  become_user: cinder
+  tags: controller_cinder
+  when: is_master_controller
+
+- name: Start/enable Cinder services
+  service: name="{{item}}" state="running" enabled=True
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-volume
+  when: is_master_controller
+  tags: controller_cinder

@@ -1,0 +1,11 @@
+---
+cinder_conf_vals:
+  - [ 'database', 'connection', 'mysql://cinder:{{cinder_db_pass}}@127.0.0.1/cinder' ]
+  - [ 'DEFAULT', 'osapi_volume_listen', '{{int_virtual_ip}}' ]
+  - [ 'DEFAULT', 'nova_catalog_info', "compute:nova:publicURL" ]
+  - [ 'DEFAULT', 'nova_catalog_admin_info', "compute:nova:adminURL" ]
+  - [ 'DEFAULT', 'public_endpoint', '{{ext_base_url}}:8776/' ]
+  - [ 'DEFAULT', 'glance_host', '{{int_virtual_ip}}' ]
+  - [ 'DEFAULT', 'os_privileged_user_name', 'cinder' ]
+  - [ 'DEFAULT', 'os_privileged_user_password', '{{service_pass}}' ]
+  - [ 'DEFAULT', 'os_privileged_user_tenant', 'service' ]
