@@ -71,3 +71,7 @@
   
 - include: ../../network/tasks/set_ml2_conf.yml
   tags: compute_neutron
+
+- name: Ensure Neutron agent on compute running/enabled
+  service: name="neutron-openvswitch-agent" state="running" enabled=True
+  tags: compute_neutron

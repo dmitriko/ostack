@@ -8,13 +8,21 @@
   with_nested:
     - neutron_ml2_conf_vals
 
+- name: Set local_ip in ML2 config
+  setosconf:
+    dest="{{ml2_conf}}"
+    section="ovs"
+    option="local_ip"
+    value="{{hostvars[inventory_hostname]['ansible_' + nics.manage]['ipv4'].address}}"
+
+
 - name: Check plugin.ini is link to ml2 config
   stat: path="{{neutron_ml2_plugin_ini}}"
   register: plugin_path
-  
+
 - name: Delete plugin.ini if it is not a correct link
   file: path="{{neutron_ml2_plugin_ini}}" state="absent"
-  when: plugin_path.stat.exists and (not plugin_path.stat.islnk or plugin_path.stat.lnk_source != ml2_conf) 
-  
+  when: plugin_path.stat.exists and (not plugin_path.stat.islnk or plugin_path.stat.lnk_source != ml2_conf)
+
 - name: Create symlink for plugin config
   file: src="{{ml2_conf}}" dest="{{neutron_ml2_plugin_ini}}" owner="neutron" state="link"
