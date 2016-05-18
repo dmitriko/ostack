@@ -1,0 +1,7 @@
+---
+- name: restart nova compute
+  service: name="openstack-nova-compute" state="restarted"
+
+- name: restart neutron on compute
+  service: name="neutron-opevnswitch-agent" state="restarted"
+  

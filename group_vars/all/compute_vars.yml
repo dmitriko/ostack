@@ -1,0 +1,25 @@
+---
+compute_node_rhel_services:
+  - openstack-nova-compute
+  - neutron-openvswitch-agent
+
+# values in nova.conf on compoute nodes
+nova_compute_network_vals:
+  - [ 'DEFAULT', 'network_api_class', 'nova.network.neutronv2.api.API']
+  - [ 'DEFAULT', 'security_group_api', 'neutron']
+  - [ 'DEFAULT', 'linuxnet_interface_driver', 'nova.network.linux_net.LinuxOVSInterfaceDriver']
+  - [ 'DEFAULT', 'firewall_driver', 'nova.virt.firewall.NoopFirewallDriver']
+  - [ 'neutron', 'url', '{{int_virtual_ip}}:9696']
+  - [ 'neutron', 'auth_strategy', 'keystone']
+  - [ 'neutron', 'admin_auth_url', '{{auth_token_url}}']
+  - [ 'neutron', 'admin_tenant_name', 'service']
+  - [ 'neutron', 'admin_username', 'neutron']
+  - [ 'neutron', 'admin_password', '{{service_pass}}']
+  - [ 'neutron', 'service_metadata_proxy', True ]
+  - [ 'neutron', 'metadata_proxy_shared_secret', '{{neutron_metadata_secret}}']
+
+# values for neutron.conf on compute nodes
+neutron_compute_vals:
+  - [ 'DEFAULT', 'core_plugin', 'ml2' ]
+  - [ 'DEFAULT', 'service_plugins', 'router' ]
+  
