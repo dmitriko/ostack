@@ -1,0 +1,17 @@
+---
+  
+- name: Set auth_strategy to keystone for {{dest}}.
+  setosconf:
+    dest: "{{dest}}"
+    section: "DEFAULT"
+    option: "auth_strategy"
+    value: "keystone"
+  
+- name: Set Keystone authtoken vals for {{dest}}.
+  setosconf:
+    dest: "{{dest}}"
+    section: "keystone_authtoken"
+    option: "{{item.0}}"
+    value: "{{item.1}}"
+  with_nested:
+    - keystone_authtoken_vals

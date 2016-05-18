@@ -1,0 +1,14 @@
+---
+  
+- name: Set RabbitMQ configs for {{dest}}.
+  setosconf:
+    dest="{{dest}}"
+    section="{{item.section}}"
+    option="{{item.option}}"
+    value="{{item.value}}"
+  with_items:
+    - { section: "DEFAULT", option: "rpc_backend",  value: "rabbit" }
+    - { section: "oslo_messaging_rabbit", option: "rabbit_userid", value: "{{rabbitmq_user}}" }
+    - { section: "oslo_messaging_rabbit", option: "rabbit_password",  value: "{{rabbitmq_password}}" }
+    - { section: "oslo_messaging_rabbit", option: "rabbit_virtual_host", value: "{{rabbitmq_virtual_host}}" }
+    - { section: "oslo_messaging_rabbit", option: "rabbit_host", value: "{{rabbitmq_host}}" }
