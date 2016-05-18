@@ -1,6 +1,7 @@
 ---
 ml2_conf: '/etc/neutron/plugins/ml2/ml2_conf.ini'
 neutron_plugin_ini: '/etc/neutron/plugin.ini'
+neutron_ml2_plugin_ini: '/etc/neutron/plugins/ml2/openvswitch_agent.ini'
 neutron_server_conf_vals:
   - [ 'DEFAULT', 'core_plugin', 'ml2' ]
   - [ 'DEFAULT', 'service_plugins', "router,lbaas,vpnaas,metering" ]
