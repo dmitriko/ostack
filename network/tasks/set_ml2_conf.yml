@@ -13,7 +13,7 @@
     dest="{{ml2_conf}}"
     section="ovs"
     option="local_ip"
-    value="{{hostvars[inventory_hostname]['ansible_' + nics.manage]['ipv4'].address}}"
+    value="{{hostvars[inventory_hostname]['ansible_' + nics.data]['ipv4'].address}}"
 
 
 - name: Check plugin.ini is link to ml2 config

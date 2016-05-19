@@ -1,1 +1,79 @@
 ---
+
+- name: Ensure RPMs for nework node
+  yum: name="{{item}}" state="present"
+  with_items:
+    - 'openstack-neutron'
+    - 'openstack-neutron-ml2'
+    - 'bridge-utils'
+    - 'openstack-neutron-lbaas'
+    - 'openstack-neutron-vpnaas'
+    - 'openstack-neutron-openvswitch'
+    - 'net-tools'
+  tags: network_main
+
+- name: Set neutron.conf on network node
+  setosconf:
+    dest="/etc/neutron/neutron.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - neutron_node_conf_vals
+  tags: network_main
+  
+- include: ../../common/tasks/set_rabbit_conf.yml dest="/etc/neutron/neutron.conf"
+  tags: network_main
+
+- include: ../../common/tasks/set_keystone_conf.yml dest="/etc/neutron/neutron.conf" service_username="neutron"
+  tags: network_main
+
+- include: set_ml2_conf.yml
+  tags: network_main
+
+- name: Set bridge mapping in ml2 conf
+  setosconf:
+    dest="{{ml2_conf}}"
+    section="ovs"
+    option="bridge_mappings"
+    value="{{neutron_provider_net_name}}:{{neutron_provider_net_bridge}}"
+  when: "'network' in group_names"
+  tags: network_main
+  
+- name: Set l3 agent ini
+  setosconf:
+    dest: "{{l3_agent_ini}}"
+    section: "{{item.0}}"
+    option: "{{item.1}}"
+    value: "{{item.2}}"
+  with_nested:
+    - neutron_node_l3_vals
+  tags: network_main
+
+- name: Set DHCP agent ini
+  setosconf:
+    dest: "{{dhcp_agent_ini}}"
+    section: "{{item.0}}"
+    option: "{{item.1}}"
+    value: "{{item.2}}"
+  with_nested:
+    - neutron_node_dhcp_vals
+  tags: network_main
+
+- name: Set metadata agent
+  setosconf:
+    dest="{{metadata_agent_ini}}"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - metadata_conf_vals
+  tags: network_main
+
+- name: Ensure Neutron services running/enabled
+  service: name="{{item}}" state="running" enabled=True
+  with_items: neutron_network_rdo_services
+  tags: network_main
+
+# fix bridging
+# setup lbaas

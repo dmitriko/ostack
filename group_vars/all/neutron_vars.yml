@@ -1,10 +1,20 @@
 ---
+
 ml2_conf: '/etc/neutron/plugins/ml2/ml2_conf.ini'
+
 neutron_plugin_ini: '/etc/neutron/plugin.ini'
+
 neutron_ml2_plugin_ini: '/etc/neutron/plugins/ml2/openvswitch_agent.ini'
+
+neutron_service_plugins: "router,lbaas,vpnaas,metering"
+# vaule to use when create external network provider name
+neutron_provider_net_name: ext-vlans
+# name of OVS bridge where nics.public_shared is connected
+neutron_provider_net_bridge: br-ext-vlans
+  
 neutron_server_conf_vals:
   - [ 'DEFAULT', 'core_plugin', 'ml2' ]
-  - [ 'DEFAULT', 'service_plugins', "router,lbaas,vpnaas,metering" ]
+  - [ 'DEFAULT', 'service_plugins', "{{neutron_service_plugins}}" ]
   - [ 'DEFAULT', 'allow_overlapping_ips', True ]
   - [ 'DEFAULT', 'api_workers', 4 ]
   - [ 'DEFAULT', 'rpc_workers', 4 ]
@@ -25,6 +35,7 @@ neutron_server_conf_vals:
   - [ 'nova', 'password', '{{service_pass}}' ]
 
 vxlan_vni_ranges: '65537:69999'
+
 neutron_ml2_conf_vals:
   - [ 'ml2', 'type_drivers', 'vxlan' ]
   - [ 'ml2', 'tenant_network_types', 'vxlan' ]
@@ -33,7 +44,41 @@ neutron_ml2_conf_vals:
   - [ 'securitygroup', 'firewall_driver', 'neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver' ]
   - [ 'securitygroup', 'enable_security_group', True ]
   - [ 'ovs', 'enable_tunneling', True ]
-  - [ 'ovs', 'tunnel_id_ranges', 'vxlan_vni_ranges' ]
+  - [ 'ovs', 'tunnel_id_ranges', '{{vxlan_vni_ranges}}' ]
   - [ 'ovs', 'tunnel_type', 'vxlan' ]
   - [ 'ovs', 'tenant_network_type', 'vxlan' ]
   - [ 'agent', 'tunnel_types', 'vxlan' ]
+
+# script also adds local_ip value in set_ml2_conf.yml
+
+neutron_node_conf_vals:
+  - [ 'DEFAULT', 'core_plugin', 'ml2' ]
+  - [ 'DEFAULT', 'service_plugins', "{{neutron_service_plugins}}" ]
+  - [ 'DEFAULT', 'rpc_response_timeout', 600 ]
+
+l3_agent_ini: '/etc/neutron/l3_agent.ini'
+neutron_node_l3_vals:
+  - [ 'DEFAULT', 'interface_driver', 'neutron.agent.linux.interface.OVSInterfaceDriver' ]
+  - [ 'DEFAULT', 'router_delete_namespaces', True ]
+  - [ 'DEFAULT', 'gateway_external_network_id', ' ' ]
+  - [ 'DEFAULT', 'external_network_bridge', ' ' ]
+
+dhcp_agent_ini: '/etc/neutron/dhcp_agent.ini'
+neutron_node_dhcp_vals:
+  - [ 'DEFAULT', 'interface_driver', 'neutron.agent.linux.interface.OVSInterfaceDriver' ]  
+  - [ 'DEFAULT', 'dnsmasq_dns_servers', "{{nameservers|join(',')}}" ]
+  - [ 'DEFAULT', 'dhcp_driver', 'neutron.agent.linux.dhcp.Dnsmasq' ]
+  - [ 'DEFAULT', 'dhcp_delete_namespaces', True ]
+
+metadata_agent_ini: /etc/neutron/metadata_agent.ini
+metadata_conf_vals:
+  - [ 'DEFAULT', 'nova_metadata_ip', "{{int_virtual_ip}}" ]
+  - [ 'DEFAULT', 'metadata_proxy_shared_secret', "{{neutron_metadata_secret}}" ]
+
+neutron_network_rdo_services:
+  - neutron-vpn-agent
+  - neutron-openvswitch-agent
+  - neutron-dhcp-agent
+  - neutron-metadata-agent
+  
+  
