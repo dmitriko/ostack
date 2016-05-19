@@ -1,0 +1,40 @@
+---
+  
+- name: Ensure br-int bridge
+  openvswitch_bridge: name='br-int' state='present'
+  tags: compute_main
+
+- name: Set Neutron related vals in nova.conf
+  setosconf:
+    dest: /etc/nova/nova.conf
+    section: '{{item.0}}'
+    option: '{{item.1}}'
+    value: '{{item.2}}'
+  with_nested:
+    - nova_compute_network_vals
+  notify: restart nova compute    
+  tags: compute_neutron
+
+- name: Set neutron.conf on compute node
+  setosconf:
+      dest="/etc/neutron/neutron.conf"
+      section="{{item.0}}"
+      option="{{item.1}}"
+      value="{{item.2}}"
+  with_nested:
+    - neutron_compute_vals
+  notify: restart neutron on compute
+  tags: compute_neutron
+
+- include: ../../common/tasks/set_keystone_conf.yml  dest="/etc/neutron/neutron.conf" service_name="neutron"
+  tags: compute_neutron
+
+- include: ../../common/tasks/set_rabbit_conf.yml dest="/etc/neutron/neutron.conf" 
+  tags: compute_neutron
+  
+- include: ../../network/tasks/set_ml2_conf.yml
+  tags: compute_neutron
+
+- name: Ensure Neutron agent on compute running/enabled
+  service: name="neutron-openvswitch-agent" state="running" enabled=True
+  tags: compute_neutron

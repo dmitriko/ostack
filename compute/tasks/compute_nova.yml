@@ -1,0 +1,21 @@
+---
+
+- name: Set nova.conf settings for compute node.
+  setosconf:
+    dest="/etc/nova/nova.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - nova_compute_vals
+  tags: compute_nova
+
+- include: ../../common/tasks/set_rabbit_conf.yml dest="/etc/nova/nova.conf"
+  tags: compute_nova
+  
+- include: ../../common/tasks/set_keystone_conf.yml dest="/etc/nova/nova.conf" service_name="nova"
+  tags: compute_nova
+  
+- name: Ensure nova compute running/enabled.
+  service: name="openstack-nova-compute" state="running" enabled=True
+  tags: compute_nova

@@ -1,9 +1,24 @@
 ---
-compute_node_rhel_services:
+compute_node_rdo_services:
   - openstack-nova-compute
   - neutron-openvswitch-agent
 
-# values in nova.conf on compoute nodes
+# values in nova.conf on compute node related to compute
+nova_compute_vals:
+  - [ 'database', 'connection', 'mysql://nova:{{nova_db_pass}}@127.0.0.1/nova' ]
+  - [ 'DEFAULT', 'my_ip', "{{hostvars[inventory_hostname]['ansible_' + nics.data]['ipv4'].address}}" ]
+  - [ 'DEFAULT', 'vnc_enabled', True ]
+  - [ 'DEFAULT', 'vncserver_listen', "{{hostvars[inventory_hostname]['ansible_' + nics.manage]['ipv4'].address}}" ]
+  - [ 'DEFAULT', 'resume_guests_state_on_host_boot', True ]
+  - [ 'DEFAULT', 'os_region_name', "{{region}}" ]
+  - [ 'DEFAULT', 'vif_plugging_is_fatal', False ]
+  - [ 'DEFAULT', 'vif_plugging_timeout', 0 ]
+  - [ 'DEFAULT', 'remove_unused_base_images', False ]
+  - [ 'DEFAULT', 'default_ephemeral_format', 'ext4' ]
+  - [ 'DEFAULT', 'state_path', '/var/lib/nova' ]
+  - [ 'DEFAULT', 'novncproxy_base_url', "{{ext_base_url}}:6080/vnc_auto.html" ]
+  
+# values in nova.conf on compute node related to networking
 nova_compute_network_vals:
   - [ 'DEFAULT', 'network_api_class', 'nova.network.neutronv2.api.API']
   - [ 'DEFAULT', 'security_group_api', 'neutron']
