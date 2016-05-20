@@ -1,0 +1,39 @@
+---
+
+- name: Ensure RPMs for Heat on controller
+  yum: name="{{item}}" state="present"
+  with_items:
+    - 'openstack-heat-api'
+    - 'openstack-heat-engine'
+    - 'python-magnumclient'
+    - 'python-designateclient'
+    - 'python-mistralclient'
+    - 'python-manilaclient'
+    - 'python-zaqarclient'
+    - 'python-croniter'
+    - 'openstack-heat-api-cfn'
+  tags: controller_heat
+
+- name: Python modules required by Heat
+  pip: name="{{item}}" state="present"
+  with_items:
+    - python-magnumclient
+    - python-mistralclient
+  tags: controller_heat
+
+- include: create_service_db.yml service_name="heat"
+  tags: controller_heat
+
+#- name: Set Heat conf
+#  setosconf:
+#    dest="/etc/heat/heat.conf"
+    
+
+- name: Heat DB sync
+  command: 'heat-manage db_sync'
+  become: True
+  become_user: heat
+  tags: controller_heat
+  when: is_master_controller
+  
+     
