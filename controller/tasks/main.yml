@@ -31,7 +31,7 @@
 - name: Make sure ssl keys dir exists
   file:
     path: "{{ssl_dir}}"
-    recursive: true
+    recurse: true
     state: directory
 
 - name: Upload ssl key

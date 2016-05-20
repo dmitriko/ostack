@@ -10,7 +10,7 @@
     - 'openstack-neutron-lbaas'
     - 'openstack-neutron-vpnaas'
   tags: controller_neutron
-  
+
 - name: Update Neutron Server conf
   setosconf:
     dest="/etc/neutron/neutron.conf"
@@ -20,33 +20,33 @@
   with_nested:
     - neutron_server_conf_vals
   tags: controller_neutron
-  
+
 - include: set_keystone_conf_vals.yml service_username="neutron" dest="/etc/neutron/neutron.conf"
-  tags: controller_neutron 
+  tags: controller_neutron
 
 - include: set_rabbit_conf_vals.yml dest="/etc/neutron/neutron.conf"
   tags: controller_neutron
 
 - include: "set_ml2_conf.yml"
   tags: controller_neutron
-  
+
 - include: create_service_db.yml service_name="neutron" db_pass="{{neutron_db_pass}}"
-  when: is_master_controller  
+  when: is_master_controller
   tags: controller_neutron
-  
+
 - name: Neutron DB sync
   command: "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugin.ini upgrade head"
-  when: is_master_controller    
+  when: is_master_controller
   tags: controller_neutron
-  
+
 - name: LBAAS DB sync
   command: "neutron-db-manage --service lbaas upgrade head"
-  when: is_master_controller  
+  when: is_master_controller
   tags: controller_neutron
-  
+
 - name: VPNAAS DB sync
   command: "neutron-db-manage --service vpnaas upgrade head"
-  when: is_master_controller    
+  when: is_master_controller
   tags: controller_neutron
 
 - name: Restart Nova services related to Neutron setup
@@ -57,8 +57,22 @@
     - conductor
   when: is_master_controller
   tags: controller_neutron
-  
+
+- name: Set service provider in LBAAS  config
+  setosconf:
+    dest: '/etc/neutron/neutron_lbaas.conf'
+    section: 'service_providers'
+    option: 'service_provider'
+    value: 'LOADBALANCER:Haproxy:neutron_lbaas.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default'
+
+- name: Set service provider in VPNAS config
+  setosconf:
+    dest: '/etc/neutron/neutron_vpnaas.conf'
+    section: 'service_providers'
+    option: 'service_provider'
+    value: 'VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default'
+
 - name: Ensure Neutron Server service running/enabled
   service: name="neutron-server" state="running" enabled=True
-  when: is_master_controller    
+  when: is_master_controller
   tags: controller_neutron
