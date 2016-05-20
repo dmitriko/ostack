@@ -1,0 +1,25 @@
+---
+- name: Set auth to false
+  setmongoconf:
+    auth: False
+    bind_ip: "127.0.0.1"
+
+- name: Restart mongod
+  service: name="mongod" state="restarted"
+
+- name: Ensure user admin
+  mongodb_user:
+    database: admin
+    user: "{{mongo_user_admin}}"
+    password: "{{mongo_user_admin_pass}}"
+    state: present
+    roles:
+      - { db: "admin", role: "userAdminAnyDatabase" }
+
+- name: Set auth to true
+  setmongoconf:
+    auth: True
+    bind_ip: "{{mongo_bind_ip}}"
+
+- name: Restart mongod
+  service: name="mongod" state="restarted"
