@@ -1,0 +1,63 @@
+---
+
+- name: Ensure 10gen mongo repo
+  copy: content="{{mongo_repo_content}}" dest="{{mongo_repo_path}}"
+  tags: mongo_main
+
+- name: Ensure MongoDB rpms
+  yum: name="{{item}}" state="present"
+  with_items:
+    - mongodb-org
+    - python-pymongo
+  tags: mongo_main
+
+- name: Ensure MongoDB config
+  setmongoconf:
+    auth: True
+    bind_ip: "{{mongo_bind_ip}}"
+    dbpath: "{{mongo_dbpath}}"
+    smallfiles: True
+  notify:
+    - restart mongod
+  tags: mongo_main
+
+- name: Ensure MongoDB service running/enabled
+  service: name="mongod" state="running" enabled=True
+  tags: mongo_main
+  
+- name: Check can we login as admin user
+  command: "mongo {{mongo_bind_ip}}/admin --eval 'db.system.users.count()' -u {{mongo_user_admin}} -p {{mongo_user_admin_pass}}"
+  register: mongo_chk
+  failed_when: "not 'login failed' in mongo_chk.stderr and mongo_chk.rc != 0"
+  changed_when: no
+  tags: mongo_main
+
+- include: set_mongo_user_admin.yml
+  when: "'login failed' in mongo_chk.stderr"
+  tags: mongo_main
+
+- name: Ensure root user
+  mongodb_user:
+    login_host: "{{inventory_hostname}}"
+    login_user: "{{mongo_user_admin}}"
+    login_password: "{{mongo_user_admin_pass}}"
+    user: "{{mongo_root}}"
+    password: "{{mongo_root_pass}}"
+    database: "admin"
+    roles: "root"
+    state: present    
+  tags: mongo_main
+
+- name: Ensure ceilometer user
+  mongodb_user:
+    login_host: "{{inventory_hostname}}"
+    login_user: "{{mongo_user_admin}}"
+    login_password: "{{mongo_user_admin_pass}}"
+    user: "ceilometer"
+    password: "{{ceilometer_db_pass}}"
+    database: "ceilometer"
+    roles:
+      - 'readWrite'
+      - 'dbAdmin'
+    state: present    
+  tags: mongo_main
