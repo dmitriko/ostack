@@ -1,0 +1,36 @@
+---
+- name: Ensure Ceilometer RPMs on controller
+  yum: name="{{item}}" state="present"
+  with_items:
+    - "openstack-ceilometer-api"
+    - "openstack-ceilometer-collector"
+    - "openstack-ceilometer-notification"
+    - "openstack-ceilometer-central"
+    - "openstack-ceilometer-polling"
+    - "python-ceilometerclient"
+  tags: controller_ceilometer
+  
+- name: Set Ceilometer controller conf values
+  setosconf:
+    dest="/etc/ceilometer/ceilometer.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - ceilometer_controller_conf_vals
+  tags: controller_ceilometer
+
+- name: Set Ceilometer common conf values
+  setosconf:
+    dest="/etc/ceilometer/ceilometer.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - ceilometer_common_conf_vals    
+  tags: controller_ceilometer
+
+- name: Ensure Ceilometer services running/enabled on controller
+  service: name="{{item}}" state="running"
+  with_items: ceilometer_controller_rdo_services
+  tags: controller_ceilometer
