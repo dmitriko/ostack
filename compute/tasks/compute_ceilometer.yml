@@ -1,0 +1,32 @@
+---
+
+- name: Ensure Ceilometer RPMs on compute
+  yum: name="{{item}}" state="present"
+  with_items:
+    - openstack-ceilometer-compute
+    - python-ceilometerclient
+    - python-pecan
+
+- name: Set Ceilometer values in nova.conf
+  setosconf:
+    dest="/etc/nova/nova.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  notify:
+    - restart nova compute
+  with_nested:
+    - ceilometer_compute_nova_vals
+
+- name: Set Ceilometer values in ceilometer.conf
+  setosconf:
+    dest="/etc/ceilometer/ceilometer.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - ceilometer_common_conf_vals
+    
+- name: Ensure Ceilometer compute service
+  service: name="openstack-ceilometer-compute" state="running" enabled=True
+   

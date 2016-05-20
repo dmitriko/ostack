@@ -38,6 +38,10 @@
   tags: compute_main
 
 - include: compute_neutron.yml
-
+  tags: compute_neutron
+  
 - include: compute_nova.yml
   tags: compute_nova
+
+- include: compute_ceilometer.yml
+  tags: compute_ceilometer
