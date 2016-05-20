@@ -6,6 +6,7 @@ nameservers:
 server_name: "osdev-hw.citycloud.com"
 region: Dev1
 is_running_keystone: True
+ceilometer_db_host: 192.168.20.242
 # default nics
 nics:
   public_infra: em1

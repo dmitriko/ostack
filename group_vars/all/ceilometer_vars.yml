@@ -1,0 +1,28 @@
+---
+
+ceilometer_controller_conf_vals:
+  - ['database', 'connection', 'mongodb://ceilometer:{{ceilometer_db_pass}}@{{ceilometer_db_host}}:27017/ceilometer' ]
+  - ['api', 'host', '{{int_virtual_ip}}']
+
+ceilometer_common_conf_vals:
+  - [ 'publisher', 'metering_secret', '{{ceilometer_secret}}' ]
+  - [ 'service_credentials', 'os_auth_url', '{{auth_url}}' ]
+  - [ 'service_credentials', 'os_username', 'ceilometer' ]
+  - [ 'service_credentials', 'os_tenant_name', 'service' ]
+  - [ 'service_credentials', 'os_endpoint_type', 'internalURL' ]
+  - [ 'service_credentials', 'os_region_name', '{{region}}' ]
+  - [ 'service_credentials', 'os_password', '{{service_pass}}' ]
+
+ceilometer_controller_rdo_services:
+  - "openstack-ceilometer-api"
+  - "openstack-ceilometer-collector"
+  - "openstack-ceilometer-notification"
+  - "openstack-ceilometer-central"
+  - "openstack-ceilometer-polling"
+
+ceilometer_compute_nova_vals:
+  - [ 'DEFAULT', 'instance_usage_audit', True ]
+  - [ 'DEFAULT', 'instance_usage_audit_period', "hour" ]
+  - [ 'DEFAULT', 'notify_on_state_change', 'vm_and_task_state' ]
+  - [ 'DEFAULT', 'notification_driver', 'messagingv2' ]
+

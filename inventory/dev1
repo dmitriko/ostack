@@ -7,8 +7,11 @@ osdev-hw-net0[1:2]
 [compute]
 osdev-hw-compute0[1:3]
 
+[mongo]
+osdev-hw-ctrl02
+
 [dev1:children]
 controller
 network
 compute
-
+mongo
