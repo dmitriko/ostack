@@ -1,17 +1,8 @@
 ---
-
 - name: Ensure RPMs for Heat on controller
   yum: name="{{item}}" state="present"
   with_items:
-    - 'openstack-heat-api'
-    - 'openstack-heat-engine'
-    - 'python-magnumclient'
-    - 'python-designateclient'
-    - 'python-mistralclient'
-    - 'python-manilaclient'
-    - 'python-zaqarclient'
-    - 'python-croniter'
-    - 'openstack-heat-api-cfn'
+    - "{{ heat_controller_rpms }}"
   tags: controller_heat
 
 - name: Python modules required by Heat
@@ -21,19 +12,83 @@
     - python-mistralclient
   tags: controller_heat
 
-- include: create_service_db.yml service_name="heat"
+- include: create_service_db.yml service_name="heat" db_pass="{{heat_db_pass}}"
+  tags: controller_heat
+  when: is_master_controller
+
+- name: Set Heat conf
+  setosconf:
+    dest="/etc/heat/heat.conf"
+    section="{{item.0}}"
+    option="{{item.1}}"
+    value="{{item.2}}"
+  with_nested:
+    - "{{heat_controller_conf_vals}}"
   tags: controller_heat
 
-#- name: Set Heat conf
-#  setosconf:
-#    dest="/etc/heat/heat.conf"
-    
+- name: Ensure Heat domain
+  os_keystone_domain:
+    name: heat_domain_admin
+    description: "Manages users and projects created by heat"
+  register: heat_domain_resp
+  environment: "{{keystone_v3_admin_env}}"
+  tags: controller_heat
 
+- set_fact:
+    heat_domain_id: "{{heat_domain_resp['domain']['id']}}"
+  tags: controller_heat
+
+- name: Ensure Heat user
+  os_user_cn:
+    name: "{{heat_user_name}}"
+    password: "{{heat_user_pass}}"
+    domain: "{{heat_domain_id}}"
+  environment: "{{keystone_v3_admin_env}}"
+  tags: controller_heat
+
+- name: Ensure Heat user is admin in domain
+  os_user_role:
+    user: "{{heat_user_name}}"
+    role: "admin"
+    domain: "{{heat_domain_id}}"
+  environment: "{{keystone_v3_admin_env}}"
+  tags: controller_heat
+
+  
+- name: Set stack domain admin values in heat.conf
+  setosconf:
+    dest="/etc/heat/heat.conf"
+    section="DEFAULT"
+    option="{{item.option}}"
+    value="{{item.value}}"
+  with_items:
+    - { option: stack_domain_admin, value: "{{heat_user_name}}" }
+    - { option: stack_domain_admin_password, value: "{{heat_user_pass}}" }
+    - { option: stack_user_domain_id, value: "{{heat_domain_id}}" }
+  tags: controller_heat
+  
+- include: set_rabbit_conf_vals.yml dest="/etc/heat/heat.conf"
+  tags: controller_heat
+
+- include: set_keystone_conf_vals.yml dest="/etc/heat/heat.conf" service_username="heat"
+  tags: controller_heat
+  
 - name: Heat DB sync
   command: 'heat-manage db_sync'
   become: True
   become_user: heat
   tags: controller_heat
   when: is_master_controller
+
+- name: Ensure Heat services enabled/started
+  service: name="{{item}}" state="running" enabled=True
+  with_items: "{{heat_controller_rdo_services}}"
+  tags: controller_heat
+  when: is_master_controller
+
+- name: Ensure Heat services disabeld/stopped on slave controller
+  service: name="{{item}}" state="stopped" enabled=False
+  with_items: "{{heat_controller_rdo_services}}"
+  tags: controller_heat
+  when: not is_master_controller
   
-     

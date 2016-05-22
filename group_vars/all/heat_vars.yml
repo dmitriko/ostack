@@ -1,0 +1,37 @@
+---
+
+heat_user_name: "heat_domain_admin"
+
+heat_controller_rdo_services:
+  - openstack-heat-api
+  - openstack-heat-api-cfn
+  - openstack-heat-engine
+
+heat_controller_rpms:
+  - 'openstack-heat-api'
+  - 'openstack-heat-engine'
+  - 'python-magnumclient'
+  - 'python-designateclient'
+  - 'python-mistralclient'
+  - 'python-manilaclient'
+  - 'python-zaqarclient'
+  - 'python-croniter'
+  - 'openstack-heat-api-cfn'
+
+heat_controller_conf_vals:
+  - [ 'ec2authtoken', 'auth_uri', '{{auth_uri}}' ]
+  - [ 'DEFAULT', 'heat_metadata_server_url', '{{int_base_url}}:8000' ]
+  - [ 'DEFAULT', 'secure_proxy_ssl_header', "X-Forwarded-Proto" ]
+  - [ 'DEFAULT', 'enable_stack_abandon', "true" ]
+  - [ 'DEFAULT', 'enable_stack_adopt', "true" ]
+  - [ 'DEFAULT', 'region_name_for_services', '{{region}}' ]
+  - [ 'DEFAULT', 'heat_waitcondition_server_url', '{{int_base_url}}:8000/v1/waitcondition' ]
+  - [ 'heat_api', 'bind_host', '{{int_virtual_ip}}' ]
+  - [ 'heat_api_cfn', 'bind_host', '{{int_virtual_ip}}' ]
+  - [ 'database', 'connection', 'mysql://heat:{{heat_db_pass}}@127.0.0.1/heat' ]
+  - [ 'trustee', 'auth_plugin', 'password' ]
+  - [ 'trustee', 'auth_url', '{{auth_url}}' ]
+  - [ 'trustee', 'username', 'heat' ]
+  - [ 'trustee', 'password', '{{service_pass}}' ]
+  - [ 'trustee', 'user_domain_id', 'default' ]
+  

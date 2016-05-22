@@ -1,0 +1,7 @@
+---
+- hosts: controller
+  tasks:
+    - name: Restart Heat on controller
+      service: name="{{item}}" state="restarted"
+      with_items: "{{ heat_controller_rdo_services }}"
+      when: is_master_controller

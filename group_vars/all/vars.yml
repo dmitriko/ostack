@@ -73,7 +73,6 @@ ssl_pem_path: "{{ssl_dir}}/ssl_citycloud.pem"
 ssl_key_path: "{{ssl_dir}}/ssl_citycloud.key"
 # end ssl params
 
-heat_user_name: "heat_domain_admin"
 is_master_controller: "{{inventory_hostname==groups['controller'][0]}}"
 #RabbitMQ section
 rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
