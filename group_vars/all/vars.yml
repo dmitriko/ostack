@@ -41,7 +41,7 @@ int_base_url: "http://int.{{server_name}}"
 ext_base_url: "https://{{server_name}}"
 auth_url: "{{int_base_url}}:35357"
 auth_uri: "{{ext_base_url}}:5000"
-auth_token_url: "{{auth_url}}/v2.0"
+auth_url_v2: "{{auth_url}}/v2.0"
 
 keystone_authtoken_vals:
   - [ 'auth_uri', "{{auth_uri}}" ]
@@ -53,6 +53,16 @@ keystone_authtoken_vals:
   - [ 'username', "{{service_username}}" ]
   - [ 'password', "{{service_pass}}" ]
 
+keystone_v3_admin_env:
+  OS_IDENTITY_API_VERSION: 3
+  OS_REGION_NAME: "{{region}}"
+  OS_USERNAME: admin
+  OS_USER_DOMAIN_NAME: Default
+  OS_PASSWORD: "{{admin_pass}}"
+  OS_PROJECT_NAME: admin
+  OS_TENANT_NAME: admin
+  OS_PROJECT_DOMAIN_NAME: Default
+  OS_AUTH_URL: "{{int_base_url}}:35357/v3"
 
 glance_filesystem_store_datadir: "/var/lib/glance/images/"
 # ssl params
