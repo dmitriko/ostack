@@ -101,7 +101,7 @@
     name="{{keystone_service_def.name}}"
     type="{{keystone_service_def.type}}"
     description="{{keystone_service_def.description}}"
-    public_url="{{keystone_service_def.description}}"
+    public_url="{{keystone_service_def.public_url}}"
     internal_url="{{keystone_service_def.internal_url}}"
     admin_url="{{keystone_service_def.internal_url}}"
     region="{{region}}"
