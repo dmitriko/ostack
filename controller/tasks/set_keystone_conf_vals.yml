@@ -13,6 +13,6 @@
     option: "{{item.0}}"
     value: "{{item.1}}"
   with_nested:
-    - keystone_authtoken_vals
+    - "{{keystone_authtoken_vals}}"
 
 
