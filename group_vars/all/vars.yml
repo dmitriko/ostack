@@ -25,6 +25,7 @@ admin_token: "{{vault_admin_token}}"
 keystone_db_pass: "{{vault_keystone_db_pass}}"
 glance_db_pass: "{{vault_glance_db_pass}}"
 heat_db_pass: "{{vault_heat_db_pass}}"
+heat_user_pass: "{{vault_heat_user_pass}}"
 cinder_db_pass: "{{vault_cinder_db_pass}}"
 nova_db_pass: "{{vault_nova_db_pass}}"
 neutron_db_pass: "{{vault_neutron_db_pass}}"
@@ -62,6 +63,7 @@ ssl_pem_path: "{{ssl_dir}}/ssl_citycloud.pem"
 ssl_key_path: "{{ssl_dir}}/ssl_citycloud.key"
 # end ssl params
 
+heat_user_name: "heat_domain_admin"
 is_master_controller: "{{inventory_hostname==groups['controller'][0]}}"
 #RabbitMQ section
 rabbitmq_rpm_url: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.1/rabbitmq-server-3.6.1-1.noarch.rpm
@@ -79,8 +81,8 @@ keystone_service_def:
   user: keystone
   type: identity
   description: "Keystone Identity Service"
-  public_url: "{{auth_url}}"
-  internal_url: "{{auth_uri}}"
+  public_url: "{{auth_uri}}/v2.0/"
+  internal_url: "{{auth_url}}/v2.0/"
 # the reason we have keystone_service separated is b/c
 # not all DCs have Keystone service running
 # _def is b/c there is module keystone_service
