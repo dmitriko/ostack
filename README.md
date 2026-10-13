@@ -170,4 +170,4 @@ This is a historical project from 2016. It targets the OpenStack releases RDO sh
 
 ## Author
 
-**Dmytro Kozhevin**: [https://www.linkedin.com/in/dmitrikozhevin/](Linkedin)
+**Dmytro Kozhevin**: [LinkedIn](https://www.linkedin.com/in/dmitrikozhevin/)
